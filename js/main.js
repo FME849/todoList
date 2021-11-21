@@ -22,12 +22,10 @@ const loadingFalse = () => {
     checkLoading(isLoading);
 }
 
-const showTask = taskList => {
-    let todoTask = "";
-    let completedTask = "";
-    taskList.forEach(task => {
-        if (task.statusTask == "todo") {
-            todoTask += `
+const showTask = (taskList, _status) => {
+    return taskList?.reduce((taskType, task) => {
+        if (task.statusTask == _status) {
+            return (taskType += `
                 <li>
                     <span>${task.textTask}</span>
                     <div class="buttons">
@@ -40,33 +38,65 @@ const showTask = taskList => {
                     </button>
                     </div>
                 </li>
-            `
+            `);
         } else {
-            completedTask += `
-                <li>
-                    <span>${task.textTask}</span>
-                    <div class="buttons">
-                    <button class="remove" onclick="deleteTaskApi('${task.id}')">
-                        <i class="fa fa-trash-alt"></i>
-                    </button>
-                    <button class="complete" onclick="updateTaskApi('${task.id}')">
-                        <i class="far fa-check-circle"></i>
-                        <i class="fas fa-check-circle"></i>
-                    </button>
-                    </div>
-                </li>
-            `
+            return taskType;
         }
-        getEleId("todo").innerHTML = todoTask;
-        getEleId("completed").innerHTML = completedTask;
-    });
+    }, "");
+}
+
+const showTaskList = taskList => {
+    // Cách 2
+    const todoHTML = showTask(taskList, "todo");
+    const completedHTML = showTask(taskList, "completed");
+    getEleId("todo").innerHTML = todoHTML;
+    getEleId("completed").innerHTML = completedHTML;
+
+    // Cách 1 (Cách 1 hay cách 2 tối ưu hơn?)
+    // let todoTask = "";
+    // let completedTask = "";
+    // taskList.forEach(task => {
+    //     if (task.statusTask == "todo") {
+    //         todoTask += `
+    //             <li>
+    //                 <span>${task.textTask}</span>
+    //                 <div class="buttons">
+    //                 <button class="remove" onclick="deleteTaskApi('${task.id}')">
+    //                     <i class="fa fa-trash-alt"></i>
+    //                 </button>
+    //                 <button class="complete" onclick="updateTaskApi('${task.id}')">
+    //                     <i class="far fa-check-circle"></i>
+    //                     <i class="fas fa-check-circle"></i>
+    //                 </button>
+    //                 </div>
+    //             </li>
+    //         `
+    //     } else {
+    //         completedTask += `
+    //             <li>
+    //                 <span>${task.textTask}</span>
+    //                 <div class="buttons">
+    //                 <button class="remove" onclick="deleteTaskApi('${task.id}')">
+    //                     <i class="fa fa-trash-alt"></i>
+    //                 </button>
+    //                 <button class="complete" onclick="updateTaskApi('${task.id}')">
+    //                     <i class="far fa-check-circle"></i>
+    //                     <i class="fas fa-check-circle"></i>
+    //                 </button>
+    //                 </div>
+    //             </li>
+    //         `
+    //     }
+    //     getEleId("todo").innerHTML = todoHTML;
+    //     getEleId("completed").innerHTML = completedHTML;
+    // });
 }
 
 const getListTaskApi = () => {
     loadingTrue();
     taskApi.getListTask()
         .then(taskListObj => {
-            showTask(taskListObj.data);
+            showTaskList(taskListObj.data);
             loadingFalse();
         })
         .catch(err => {
