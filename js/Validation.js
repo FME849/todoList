@@ -1,5 +1,5 @@
 const checkEmpty = (value, message) => {
-    if (value.trim() != "") {
+    if (value.trim()) {
         return true;
     }
     alert(message);

@@ -157,7 +157,7 @@ const updateTaskApi = (id) => {
         .then(taskObj => {
             if(taskObj.data.statusTask == "todo") {
                 taskObj.data.statusTask = "completed";
-                taskApi.updateTask(taskObj.data.id, taskObj.data)
+                taskApi.updateTask(id, taskObj.data)
                     .then(taskObj => {
                         getListTaskApi();
                         loadingFalse();
